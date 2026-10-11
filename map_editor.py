@@ -252,7 +252,7 @@ class MapEditor:
             origin = map_data.get("origin", [0.0, 0.0, 0.0])
             self.origin = (float(origin[0]), float(origin[1]))
         else:
-            self.origin = (0.0, 0.0)  # <-- Fallback statt leerem Tupel
+            self.origin = (0.0, 0.0) 
             messagebox.showwarning(
                 "No map.yaml found",
                 f"No matching YAML found at:\n{yaml_path}\n\n"
@@ -503,11 +503,22 @@ class MapEditor:
             data = yaml.safe_load(f) or {}
 
         map_section = data.get("map", {})
-        if "resolution" in map_section:
-            self.resolution = float(map_section["resolution"])
-        if "origin" in map_section:
-            origin = map_section["origin"]
-            self.origin = (float(origin[0]), float(origin[1]))
+        if self.image is None:
+            # Nur ohne geladene pgm den Origin aus der YAML nehmen
+            if "resolution" in map_section:
+                self.resolution = float(map_section["resolution"])
+            if "origin" in map_section:
+                origin = map_section["origin"]
+                self.origin = (float(origin[0]), float(origin[1]))
+        elif "origin" in map_section:
+            o = map_section["origin"]
+            if abs(float(o[0]) - self.origin[0]) > 0.001 or abs(float(o[1]) - self.origin[1]) > 0.001:
+                messagebox.showwarning(
+                    "Origin weicht ab",
+                    f"Die YAML wurde mit Origin {o[:2]} gespeichert, "
+                    f"die geladene Karte hat {list(self.origin)}.\n"
+                    "Die Koordinaten passen nicht zu dieser Karte."
+                )
 
         self.objects = data.get("objects", {})
         self.polygons = data.get("polygons", [])
