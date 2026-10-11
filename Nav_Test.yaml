@@ -1,0 +1,211 @@
+map:
+  resolution: 0.05
+  origin:
+  - -0.355
+  - -3.387
+  width_px: 200
+  height_px: 189
+  width_m: 10.0
+  height_m: 9.45
+objects:
+  Door:
+    type: door
+    frame: map
+    position:
+    - 0.264
+    - 0.105
+  Sink:
+    type: door
+    frame: map
+    position:
+    - 8.7
+    - 1.056
+  Seat:
+    type: seat
+    frame: map
+    position:
+    - 6.291
+    - 0.646
+polygons:
+- name: Wall1
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 0.139
+    - 2.083
+  - - 9.264
+    - 2.083
+  - - 9.264
+    - 1.857
+  - - 0.139
+    - 1.857
+- name: Wall3
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 4.307
+    - -1.109
+  - - 5.121
+    - -1.109
+  - - 5.121
+    - -3.262
+  - - 4.307
+    - -3.262
+- name: Wall4
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 4.658
+    - -2.023
+  - - 0.202
+    - -2.023
+  - - 0.202
+    - -3.212
+  - - 4.658
+    - -3.212
+- name: Wall5
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 0.064
+    - -0.258
+  - - 0.402
+    - -0.258
+  - - 0.402
+    - -3.212
+  - - 0.064
+    - -3.212
+- name: Wall 6
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 0.026
+    - 2.058
+  - - 0.364
+    - 2.058
+  - - 0.364
+    - 0.418
+  - - 0.026
+    - 0.418
+- name: Wall7
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 8.312
+    - 1.845
+  - - 9.214
+    - 1.845
+  - - 9.214
+    - -3.249
+  - - 8.312
+    - -3.249
+- name: Wall8
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 8.613
+    - -2.248
+  - - 4.67
+    - -2.248
+  - - 4.67
+    - -3.249
+  - - 8.613
+    - -3.249
+- name: Table
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 1.616
+    - -1.084
+  - - 2.692
+    - -1.084
+  - - 2.692
+    - -1.585
+  - - 1.616
+    - -1.585
+- name: TV
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 0.364
+    - 1.857
+  - - 2.029
+    - 1.857
+  - - 2.029
+    - 1.444
+  - - 0.364
+    - 1.444
+- name: Arena
+  type: boundary
+  frame: map
+  color: orange
+  points:
+  - - -0.099
+    - 5.863
+  - - 9.314
+    - 5.863
+  - - 9.314
+    - -3.312
+  - - -0.099
+    - -3.312
+- name: Wall2
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 4.382
+    - 2.07
+  - - 4.858
+    - 2.07
+  - - 4.858
+    - -0.558
+  - - 4.382
+    - -0.558
+- name: Flowerpot
+  type: obstacle
+  frame: map
+  color: green
+  points:
+  - - 3.8
+    - 1.954
+  - - 4.59
+    - 1.954
+  - - 4.59
+    - 1.192
+  - - 3.8
+    - 1.192
+- name: Cupboard
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 4.063
+    - 1.202
+  - - 4.853
+    - 1.202
+  - - 4.853
+    - -0.557
+  - - 4.063
+    - -0.557
+- name: Dinnertable
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 5.834
+    - 0.261
+  - - 7.355
+    - 0.261
+  - - 7.355
+    - -1.311
+  - - 5.834
+    - -1.311
