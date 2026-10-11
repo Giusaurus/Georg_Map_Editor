@@ -1,211 +1,453 @@
 map:
   resolution: 0.05
   origin:
-  - -0.355
-  - -3.387
-  width_px: 200
-  height_px: 189
-  width_m: 10.0
-  height_m: 9.45
+  - -0.167
+  - -3.423
+  width_px: 185
+  height_px: 185
+  width_m: 9.25
+  height_m: 9.25
 objects:
-  Door:
+  Exit:
     type: door
     frame: map
     position:
-    - 0.264
-    - 0.105
-  Sink:
-    type: door
-    frame: map
-    position:
-    - 8.7
-    - 1.056
+    - 0.023
+    - 4.43
   Seat:
     type: seat
     frame: map
     position:
-    - 6.291
-    - 0.646
+    - 5.659
+    - 0.755
+  Water:
+    type: beverages
+    frame: map
+    position:
+    - 8.06
+    - 1.539
+  Entrance:
+    type: door
+    frame: map
+    position:
+    - 0.125
+    - 0.1
 polygons:
-- name: Wall1
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 0.139
-    - 2.083
-  - - 9.264
-    - 2.083
-  - - 9.264
-    - 1.857
-  - - 0.139
-    - 1.857
-- name: Wall3
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 4.307
-    - -1.109
-  - - 5.121
-    - -1.109
-  - - 5.121
-    - -3.262
-  - - 4.307
-    - -3.262
-- name: Wall4
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 4.658
-    - -2.023
-  - - 0.202
-    - -2.023
-  - - 0.202
-    - -3.212
-  - - 4.658
-    - -3.212
-- name: Wall5
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 0.064
-    - -0.258
-  - - 0.402
-    - -0.258
-  - - 0.402
-    - -3.212
-  - - 0.064
-    - -3.212
-- name: Wall 6
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 0.026
-    - 2.058
-  - - 0.364
-    - 2.058
-  - - 0.364
-    - 0.418
-  - - 0.026
-    - 0.418
-- name: Wall7
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 8.312
-    - 1.845
-  - - 9.214
-    - 1.845
-  - - 9.214
-    - -3.249
-  - - 8.312
-    - -3.249
-- name: Wall8
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 8.613
-    - -2.248
-  - - 4.67
-    - -2.248
-  - - 4.67
-    - -3.249
-  - - 8.613
-    - -3.249
-- name: Table
-  type: obstacle
-  frame: map
-  color: purple
-  points:
-  - - 1.616
-    - -1.084
-  - - 2.692
-    - -1.084
-  - - 2.692
-    - -1.585
-  - - 1.616
-    - -1.585
-- name: TV
-  type: obstacle
-  frame: map
-  color: purple
-  points:
-  - - 0.364
-    - 1.857
-  - - 2.029
-    - 1.857
-  - - 2.029
-    - 1.444
-  - - 0.364
-    - 1.444
 - name: Arena
   type: boundary
   frame: map
   color: orange
   points:
-  - - -0.099
-    - 5.863
-  - - 9.314
-    - 5.863
-  - - 9.314
-    - -3.312
-  - - -0.099
-    - -3.312
+  - - -0.161
+    - 5.815
+  - - 9.114
+    - 5.815
+  - - 9.114
+    - -3.251
+  - - -0.161
+    - -3.251
+- name: WAll1
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 0.032
+    - 2.165
+  - - 2.279
+    - 2.165
+  - - 2.279
+    - 2.033
+  - - 0.032
+    - 2.033
 - name: Wall2
   type: obstacle
   frame: map
   color: red
   points:
-  - - 4.382
-    - 2.07
-  - - 4.858
-    - 2.07
-  - - 4.858
-    - -0.558
-  - - 4.382
-    - -0.558
-- name: Flowerpot
+  - - 2.993
+    - 2.189
+  - - 7.468
+    - 2.189
+  - - 7.468
+    - 2.017
+  - - 2.993
+    - 2.017
+- name: Wall3
   type: obstacle
   frame: map
-  color: green
+  color: red
   points:
-  - - 3.8
-    - 1.954
-  - - 4.59
-    - 1.954
-  - - 4.59
-    - 1.192
-  - - 3.8
-    - 1.192
+  - - 4.491
+    - 2.189
+  - - 4.633
+    - 2.189
+  - - 4.633
+    - -0.423
+  - - 4.491
+    - -0.423
+- name: Wall4
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 4.481
+    - -1.142
+  - - 4.623
+    - -1.142
+  - - 4.623
+    - -3.238
+  - - 4.481
+    - -3.238
+- name: Wall5
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 8.187
+    - 2.159
+  - - 9.068
+    - 2.159
+  - - 9.068
+    - 1.987
+  - - 8.187
+    - 1.987
+- name: Wall6
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 4.481
+    - 4.711
+  - - 4.633
+    - 4.711
+  - - 4.633
+    - 2.199
+  - - 4.481
+    - 2.199
+- name: Wall8
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - -0.136
+    - 5.845
+  - - 0.087
+    - 5.845
+  - - 0.087
+    - 4.822
+  - - -0.136
+    - 4.822
+- name: Wall9
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - -0.177
+    - 2.21
+  - - 0.076
+    - 2.21
+  - - 0.076
+    - 0.488
+  - - -0.177
+    - 0.488
+- name: Wall10
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - -0.187
+    - -0.251
+  - - 0.076
+    - -0.251
+  - - 0.076
+    - -3.218
+  - - -0.187
+    - -3.218
+- name: Wall11
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - -0.192
+    - 3.968
+  - - 0.066
+    - 3.968
+  - - 0.066
+    - 2.181
+  - - -0.192
+    - 2.181
+- name: Sofa
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 0.952
+    - -2.082
+  - - 3.171
+    - -2.082
+  - - 3.171
+    - -2.984
+  - - 0.952
+    - -2.984
+- name: Flower Pot
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 0.345
+    - -2.459
+  - - 0.768
+    - -2.459
+  - - 0.768
+    - -2.873
+  - - 0.345
+    - -2.873
+- name: Lamp + Table
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 3.309
+    - -2.201
+  - - 4.248
+    - -2.201
+  - - 4.248
+    - -2.827
+  - - 3.309
+    - -2.827
 - name: Cupboard
   type: obstacle
   frame: map
   color: purple
   points:
-  - - 4.063
-    - 1.202
-  - - 4.853
-    - 1.202
-  - - 4.853
-    - -0.557
-  - - 4.063
-    - -0.557
-- name: Dinnertable
+  - - 4.054
+    - 1.076
+  - - 4.459
+    - 1.076
+  - - 4.459
+    - -0.066
+  - - 4.054
+    - -0.066
+- name: Flowerpot 2
   type: obstacle
   frame: map
   color: purple
   points:
-  - - 5.834
-    - 0.261
-  - - 7.355
-    - 0.261
-  - - 7.355
-    - -1.311
-  - - 5.834
-    - -1.311
+  - - 3.686
+    - 1.748
+  - - 4.146
+    - 1.748
+  - - 4.146
+    - 1.287
+  - - 3.686
+    - 1.287
+- name: TV Board
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 0.262
+    - 2.051
+  - - 1.91
+    - 2.051
+  - - 1.91
+    - 1.49
+  - - 0.262
+    - 1.49
+- name: Cupboard 2
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 0.253
+    - 2.641
+  - - 1.449
+    - 2.641
+  - - 1.449
+    - 2.226
+  - - 0.253
+    - 2.226
+- name: Basket
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 1.532
+    - 2.585
+  - - 1.928
+    - 2.585
+  - - 1.928
+    - 2.236
+  - - 1.532
+    - 2.236
+- name: Lamp
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 0.372
+    - 3.837
+  - - 0.75
+    - 3.837
+  - - 0.75
+    - 3.432
+  - - 0.372
+    - 3.432
+- name: Desk
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 3.134
+    - 3.773
+  - - 4.459
+    - 3.773
+  - - 4.459
+    - 2.236
+  - - 3.134
+    - 2.236
+- name: Cupboard3
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 0.603
+    - 5.853
+  - - 2.83
+    - 5.853
+  - - 2.83
+    - 5.448
+  - - 0.603
+    - 5.448
+- name: Closet
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 8.344
+    - 4.242
+  - - 9.071
+    - 4.242
+  - - 9.071
+    - 2.171
+  - - 8.344
+    - 2.171
+- name: Kitchen
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 8.243
+    - 1.978
+  - - 9.071
+    - 1.978
+  - - 9.071
+    - -3.186
+  - - 8.243
+    - -3.186
+- name: Dining Table
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 5.647
+    - 0.385
+  - - 7.285
+    - 0.385
+  - - 7.285
+    - -1.235
+  - - 5.647
+    - -1.235
+- name: Cupboard 5
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 4.625
+    - -1.64
+  - - 5.048
+    - -1.64
+  - - 5.048
+    - -3.158
+  - - 4.625
+    - -3.158
+- name: Table
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 1.199
+    - -0.897
+  - - 2.892
+    - -0.897
+  - - 2.892
+    - -1.699
+  - - 1.199
+    - -1.699
+- name: Wall7
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 4.419
+    - 5.851
+  - - 4.72
+    - 5.851
+  - - 4.72
+    - 5.354
+  - - 4.419
+    - 5.354
+- name: Cupboard4
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 5.638
+    - 5.813
+  - - 6.965
+    - 5.813
+  - - 6.965
+    - 5.166
+  - - 5.638
+    - 5.166
+- name: Bed
+  type: obstacle
+  frame: map
+  color: purple
+  points:
+  - - 4.676
+    - 4.317
+  - - 6.965
+    - 4.317
+  - - 6.965
+    - 2.224
+  - - 4.676
+    - 2.224
+- name: Door
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 0.083
+    - -0.461
+  - - 0.56
+    - -0.888
+  - - 0.61
+    - -0.812
+  - - 0.083
+    - -0.243
+- name: Door2
+  type: obstacle
+  frame: map
+  color: red
+  points:
+  - - 4.638
+    - 4.721
+  - - 4.731
+    - 4.721
+  - - 5.344
+    - 4.451
+  - - 5.35
+    - 4.378
+  - - 4.638
+    - 4.606
