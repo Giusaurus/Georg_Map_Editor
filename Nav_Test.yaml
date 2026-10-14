@@ -26,156 +26,13 @@ objects:
     position:
     - 8.06
     - 1.539
-  Entrance:
-    type: door
+  Start:
+    type: start
     frame: map
     position:
-    - 0.125
-    - 0.1
+    - 0.439
+    - 0.105
 polygons:
-- name: Arena
-  type: boundary
-  frame: map
-  color: orange
-  points:
-  - - -0.161
-    - 5.815
-  - - 9.114
-    - 5.815
-  - - 9.114
-    - -3.251
-  - - -0.161
-    - -3.251
-- name: WAll1
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 0.032
-    - 2.165
-  - - 2.279
-    - 2.165
-  - - 2.279
-    - 2.033
-  - - 0.032
-    - 2.033
-- name: Wall2
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 2.993
-    - 2.189
-  - - 7.468
-    - 2.189
-  - - 7.468
-    - 2.017
-  - - 2.993
-    - 2.017
-- name: Wall3
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 4.491
-    - 2.189
-  - - 4.633
-    - 2.189
-  - - 4.633
-    - -0.423
-  - - 4.491
-    - -0.423
-- name: Wall4
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 4.481
-    - -1.142
-  - - 4.623
-    - -1.142
-  - - 4.623
-    - -3.238
-  - - 4.481
-    - -3.238
-- name: Wall5
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 8.187
-    - 2.159
-  - - 9.068
-    - 2.159
-  - - 9.068
-    - 1.987
-  - - 8.187
-    - 1.987
-- name: Wall6
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 4.481
-    - 4.711
-  - - 4.633
-    - 4.711
-  - - 4.633
-    - 2.199
-  - - 4.481
-    - 2.199
-- name: Wall8
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - -0.136
-    - 5.845
-  - - 0.087
-    - 5.845
-  - - 0.087
-    - 4.822
-  - - -0.136
-    - 4.822
-- name: Wall9
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - -0.177
-    - 2.21
-  - - 0.076
-    - 2.21
-  - - 0.076
-    - 0.488
-  - - -0.177
-    - 0.488
-- name: Wall10
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - -0.187
-    - -0.251
-  - - 0.076
-    - -0.251
-  - - 0.076
-    - -3.218
-  - - -0.187
-    - -3.218
-- name: Wall11
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - -0.192
-    - 3.968
-  - - 0.066
-    - 3.968
-  - - 0.066
-    - 2.181
-  - - -0.192
-    - 2.181
 - name: Sofa
   type: obstacle
   frame: map
@@ -215,7 +72,7 @@ polygons:
     - -2.827
   - - 3.309
     - -2.827
-- name: Cupboard
+- name: Shelf
   type: obstacle
   frame: map
   color: purple
@@ -254,7 +111,7 @@ polygons:
     - 1.49
   - - 0.262
     - 1.49
-- name: Cupboard 2
+- name: Shelf 2
   type: obstacle
   frame: map
   color: purple
@@ -306,7 +163,7 @@ polygons:
     - 2.236
   - - 3.134
     - 2.236
-- name: Cupboard3
+- name: Shelf3
   type: obstacle
   frame: map
   color: purple
@@ -358,7 +215,7 @@ polygons:
     - -1.235
   - - 5.647
     - -1.235
-- name: Cupboard 5
+- name: Shelf 5
   type: obstacle
   frame: map
   color: purple
@@ -384,20 +241,7 @@ polygons:
     - -1.699
   - - 1.199
     - -1.699
-- name: Wall7
-  type: obstacle
-  frame: map
-  color: red
-  points:
-  - - 4.419
-    - 5.851
-  - - 4.72
-    - 5.851
-  - - 4.72
-    - 5.354
-  - - 4.419
-    - 5.354
-- name: Cupboard4
+- name: Shelf 4
   type: obstacle
   frame: map
   color: purple
@@ -451,3 +295,112 @@ polygons:
     - 4.378
   - - 4.638
     - 4.606
+- name: Walls
+  type: obstacle
+  frame: map
+  color: '#F2B04A'
+  parts:
+  - - - -0.16
+      - 5.82
+    - - 0.084
+      - 5.82
+    - - 0.084
+      - 4.836
+    - - -0.16
+      - 4.836
+  - - - 0.084
+      - 3.964
+    - - -0.181
+      - 3.964
+    - - -0.181
+      - 0.386
+    - - 0.084
+      - 0.386
+  - - - -0.167
+      - -0.277
+    - - 0.084
+      - -0.277
+    - - 0.084
+      - -3.416
+    - - -0.167
+      - -3.416
+  - - - -0.167
+      - -3.2
+    - - 9.09
+      - -3.2
+    - - 9.09
+      - -3.416
+    - - -0.167
+      - -3.416
+  - - - 4.486
+      - -1.135
+    - - 4.625
+      - -1.135
+    - - 4.625
+      - -3.235
+    - - 4.486
+      - -3.235
+  - - - 2.283
+      - 2.175
+    - - -0.001
+      - 2.175
+    - - -0.001
+      - 2.032
+    - - 2.283
+      - 2.032
+  - - - 2.984
+      - 2.175
+    - - 7.484
+      - 2.175
+    - - 7.484
+      - 2.029
+    - - 2.984
+      - 2.029
+  - - - 4.484
+      - 2.075
+    - - 4.631
+      - 2.075
+    - - 4.631
+      - -0.416
+    - - 4.484
+      - -0.416
+  - - - 8.185
+      - 2.175
+    - - 9.073
+      - 2.175
+    - - 9.073
+      - 1.974
+    - - 8.185
+      - 1.974
+  - - - 9.026
+      - 5.768
+    - - 9.136
+      - 5.768
+    - - 9.136
+      - -3.424
+    - - 9.026
+      - -3.424
+  - - - -0.162
+      - 5.823
+    - - 9.134
+      - 5.823
+    - - 9.134
+      - 5.754
+    - - -0.162
+      - 5.754
+  - - - 4.482
+      - 5.754
+    - - 4.677
+      - 5.754
+    - - 4.677
+      - 5.381
+    - - 4.482
+      - 5.381
+  - - - 4.646
+      - 4.723
+    - - 4.477
+      - 4.723
+    - - 4.477
+      - 2.132
+    - - 4.646
+      - 2.132
