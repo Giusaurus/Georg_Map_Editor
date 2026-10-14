@@ -10,29 +10,51 @@ import os
 
 ICONS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icons")
 
+PALETTE = {
+    "bg":         "#14100f",   # App-Hintergrund
+    "canvas":     "#0d0a09",   # Zeichenfläche
+    "sidebar":    "#0b0807",   # Seitenleiste: dunkler als der Rest
+    "card":       "#33241f",   # Objekt-Karten: heller als die Leiste
+    "card_hi":    "#46322b",   # Karte beim Überfahren
+    "surface":    "#1e1613",   # Karten, Eingabefelder
+    "surface_hi": "#2a1f1b",   # Hover / aktive Flächen
+    "border":     "#3a2a25",
+    "text":       "#f3e9e5",
+    "muted":      "#a8948d",
+    "primary":    "#AC362A",   # GEORG-Rot
+    "accent":     "#F08A6C",   # Korall: Hervorhebung, Vorschau
+    "success":    "#4FC3A1",   # Hover / Auswahl
+    "warning":    "#F2B04A",
+    "danger":     "#E5484D",
+    "info":       "#6CB4EE",
+}
+
+# Standardfarbe je Polygon-Typ und Auswahl im Farbdialog
+TYPE_COLORS = {"wall": "#F08A6C", "obstacle": "#F2B04A", "boundary": "#6CB4EE"}
+SWATCH_COLORS = ["#F08A6C", "#F2B04A", "#4FC3A1", "#6CB4EE", "#B79CED", "#EDE3DF"]
+
 GEORG_THEME = ThemeDefinition(
     name="georg_dark",
     mode="dark",
     colors=Colors(
-        primary="#AC362A",
-        secondary="#3a1f1c",
-        success="#4caf50",
-        info="#D9694F",
-        warning="#ff9800",
-        danger="#e63946",
-        light="#f5f5f5",
-        dark="#1a1210",
-        bg="#1a1210",
-        fg="#f0e0dc",
-        selectbg="#AC362A",
+        primary=PALETTE["primary"],
+        secondary=PALETTE["surface_hi"],
+        success=PALETTE["success"],
+        info=PALETTE["accent"],
+        warning=PALETTE["warning"],
+        danger=PALETTE["danger"],
+        light=PALETTE["text"],
+        dark=PALETTE["bg"],
+        bg=PALETTE["bg"],
+        fg=PALETTE["text"],
+        selectbg=PALETTE["primary"],
         selectfg="#ffffff",
-        border="#5c2c24",
-        inputfg="#f0e0dc",
-        inputbg="#2b1a17",
-        active="#7a3229",
+        border=PALETTE["border"],
+        inputfg=PALETTE["text"],
+        inputbg=PALETTE["surface"],
+        active=PALETTE["surface_hi"],
     )
 )
-
 
 class MapEditor:
 
@@ -53,7 +75,8 @@ class MapEditor:
 
         self.current_polygon_points = None
         self.zone_start = None
-        self.zone_preview_rect = None   
+        self.zone_preview_rect = None
+        self.pending_rects = []   
 
         # hover UI
         self.hover_dot = None
@@ -129,9 +152,9 @@ class MapEditor:
         self.object_type_combo.pack(side="left")
 
         # Zoom controls
-        ttk.Button(top, text="-", width=3, command=lambda: self.zoom_by(1 / 1.2), bootstyle="secondary-outline").pack(side="left", padx=(20, 0))
-        ttk.Button(top, text="+", width=3, command=lambda: self.zoom_by(1.2), bootstyle="secondary-outline").pack(side="left")
-        ttk.Button(top, text="Fit", command=self.zoom_fit, bootstyle="secondary-outline").pack(side="left", padx=5)
+        ttk.Button(top, text="-", width=3, command=lambda: self.zoom_by(1 / 1.2), bootstyle="info-outline").pack(side="left", padx=(20, 0))
+        ttk.Button(top, text="+", width=3, command=lambda: self.zoom_by(1.2), bootstyle="info-outline").pack(side="left")
+        ttk.Button(top, text="Fit", command=self.zoom_fit, bootstyle="info-outline").pack(side="left", padx=5)
         self.zoom_label = ttk.Label(top, text="100%")
         self.zoom_label.pack(side="left", padx=5)
 
@@ -140,7 +163,7 @@ class MapEditor:
         middle = ttk.Frame(root)
         middle.pack(fill="both", expand=True)
 
-        self.canvas = tk.Canvas(middle, bg=self.style.colors.bg, highlightthickness=0)
+        self.canvas = tk.Canvas(middle, bg=PALETTE["canvas"], highlightthickness=0)
         self.canvas.pack(side="left", fill="both", expand=True)
 
         self.canvas.bind("<Button-1>", self.on_click)
@@ -160,39 +183,52 @@ class MapEditor:
 
         # Cancel drawing
         self.root.bind("<Escape>", lambda e: self.cancel_current_drawing())
+        self.root.bind("<Return>", lambda e: self.confirm_pending_rects())
+        self.root.bind("<KP_Enter>", lambda e: self.confirm_pending_rects())
+        self.root.bind("<BackSpace>", lambda e: self.undo_pending_rect())
 
         # Sidebar with Objects/Zones with divider to map screen
 
-        divider = tk.Frame(middle, width=4, bg=self.style.colors.info)
+        divider = tk.Frame(middle, width=2, bg=PALETTE["border"])
         divider.pack(side="left", fill="y")
 
-        sidebar = ttk.Frame(middle, width=260)
+        sidebar = tk.Frame(middle, width=260, bg=PALETTE["sidebar"])
         sidebar.pack(side="right", fill="y")
         sidebar.pack_propagate(False)
 
-        ttk.Label(sidebar, text="Objekte / Zonen:", font=("", 11, "bold")).pack(
-            anchor="w", padx=8, pady=(8, 4)
-        )
+        tk.Label(
+            sidebar, text="Objekte / Zonen", font=("", 11, "bold"),
+            bg=PALETTE["sidebar"], fg=PALETTE["text"]
+        ).pack(anchor="w", padx=12, pady=(12, 6))
 
-        sidebar_body = ttk.Frame(sidebar)
+        sidebar_body = tk.Frame(sidebar, bg=PALETTE["sidebar"])
         sidebar_body.pack(fill="both", expand=True, padx=(8, 0), pady=(0, 8))
 
         sidebar_body.bind("<Enter>", lambda e: self._activate_sidebar_scroll())
         sidebar_body.bind("<Leave>", lambda e: self._deactivate_sidebar_scroll())
 
-        self.sidebar_canvas = tk.Canvas(sidebar_body, highlightthickness=0)
+        self.sidebar_canvas = tk.Canvas(
+            sidebar_body, highlightthickness=0, bg=PALETTE["sidebar"]
+        )
         self.sidebar_canvas.pack(side="left", fill="both", expand=True)
 
         sidebar_scroll = ttk.Scrollbar(sidebar_body, orient="vertical", command=self.sidebar_canvas.yview)
         sidebar_scroll.pack(side="right", fill="y")
         self.sidebar_canvas.configure(yscrollcommand=sidebar_scroll.set)
 
-        self.sidebar_list_frame = ttk.Frame(self.sidebar_canvas)
-        self.sidebar_canvas.create_window((0, 0), window=self.sidebar_list_frame, anchor="nw")
+        self.sidebar_list_frame = tk.Frame(self.sidebar_canvas, bg=PALETTE["sidebar"])
+        self._sidebar_window = self.sidebar_canvas.create_window(
+            (0, 0), window=self.sidebar_list_frame, anchor="nw"
+        )
 
         self.sidebar_list_frame.bind(
             "<Configure>",
             lambda e: self.sidebar_canvas.configure(scrollregion=self.sidebar_canvas.bbox("all"))
+        )
+        # Liste immer so breit wie die Seitenleiste
+        self.sidebar_canvas.bind(
+            "<Configure>",
+            lambda e: self.sidebar_canvas.itemconfigure(self._sidebar_window, width=e.width)
         )
 
         self.refresh_sidebar()
@@ -221,6 +257,7 @@ class MapEditor:
 
         self.zone_start = None
         self.current_polygon_points = None
+        self.pending_rects = []
 
         if self.hover_dot:
             self.canvas.delete(self.hover_dot)
@@ -525,6 +562,7 @@ class MapEditor:
 
         self.current_polygon_points = None
         self.zone_start = None
+        self.pending_rects = []
 
         self.refresh_sidebar()
         self.redraw()
@@ -588,7 +626,7 @@ class MapEditor:
     # Polygon type and color pick options
     
     # avaible colors to choose from
-    POLYGON_COLORS = ["red", "blue", "green", "orange", "purple", "black"]
+    POLYGON_COLORS = SWATCH_COLORS
     POLY_TYPE_LABELS = {"obstacle": "Solid obstacle", "wall": "Wall outline", "boundary": "Room boundary",}
 
     def ask_polygon_type_and_color(self):
@@ -623,6 +661,7 @@ class MapEditor:
                 text=type_descriptions[value],
                 variable=type_var,
                 value=value,
+                command=lambda v=value: select_color(TYPE_COLORS[v]),
             ).pack(fill="x", anchor="w")
 
         # --- Color: swatch buttons ---
@@ -654,7 +693,7 @@ class MapEditor:
             btn.pack(side="left", padx=3)
             swatch_buttons[c] = btn
 
-        select_color(self.POLYGON_COLORS[0])
+        select_color(TYPE_COLORS["obstacle"])
 
         # --- OK / Cancel ---
         def on_ok():
@@ -684,11 +723,94 @@ class MapEditor:
         dialog.wait_window()
         return result["type"], result["color"]
 
+
+    @staticmethod
+    def polygon_rings(p):
+        """Alle Ringe eines Eintrags: 'parts' (mehrere Rechtecke) oder 'points' (ein Ring)."""
+        if p.get("parts"):
+            return p["parts"]
+        return [p["points"]]
+
+    @staticmethod
+    def _rect_ring(p1, p2):
+        return [
+            [p1[0], p1[1]],
+            [p2[0], p1[1]],
+            [p2[0], p2[1]],
+            [p1[0], p2[1]],
+        ]
+
+    def undo_pending_rect(self):
+        if self.mode.get() != "rectangle":
+            return
+
+        if self.zone_start is not None:          # halb gesetztes Rechteck verwerfen
+            self.zone_start = None
+            if self.zone_preview_rect:
+                self.canvas.delete(self.zone_preview_rect)
+                self.zone_preview_rect = None
+        elif self.pending_rects:                 # sonst das letzte Rechteck entfernen
+            self.pending_rects.pop()
+
+        self.redraw()
+
+    def confirm_pending_rects(self):
+        if self.mode.get() != "rectangle" or not self.pending_rects:
+            return
+
+        if self.zone_start is not None:
+            self.zone_start = None
+            if self.zone_preview_rect:
+                self.canvas.delete(self.zone_preview_rect)
+                self.zone_preview_rect = None
+
+        rects = list(self.pending_rects)
+
+        name = self.ask_required_name("Zone Name", "Enter zone name:")
+        if not name:
+            return                                # Rechtecke bleiben erhalten
+
+        ptype, color = self.ask_polygon_type_and_color()
+        if ptype is None:
+            return
+
+        if ptype == "boundary":
+            if len(rects) > 1:
+                messagebox.showwarning(
+                    "Boundary",
+                    "Eine Boundary kann nur aus einem Rechteck bestehen."
+                )
+                return
+            existing = [poly for poly in self.polygons if poly.get("type") == "boundary"]
+            if existing:
+                proceed = messagebox.askyesno(
+                    "Replace boundary?",
+                    "A 'boundary' polygon already exists "
+                    f"('{existing[0]['name']}'). Only one boundary polygon is "
+                    "used by the navigator. Add this one anyway?"
+                )
+                if not proceed:
+                    return
+
+        rings = [self._rect_ring(a, b) for a, b in rects]
+        entry = {"name": name, "type": ptype, "frame": "map", "color": color}
+        if len(rings) == 1:
+            entry["points"] = rings[0]            # wie bisher
+        else:
+            entry["parts"] = rings                # mehrere Rechtecke = ein Objekt
+
+        self.polygons.append(entry)
+        self.pending_rects = []
+        self.refresh_sidebar()
+        self.redraw()
+
     
     # Click handler
     
 
     def on_click(self, event):
+
+        self.canvas.focus_set()
 
         if self.image is None:
             return
@@ -723,60 +845,25 @@ class MapEditor:
                 self.zone_start = (event.x, event.y)
                 return
 
-            if self.zone_preview_rect:
-                self.canvas.delete(self.zone_preview_rect)
-                self.zone_preview_rect = None
-
             x1, y1 = self.zone_start
             x2, y2 = event.x, event.y
 
-            name = self.ask_required_name("Zone Name", "Enter zone name:")
-            if not name:
-                self.zone_start = None
-                return
-
-            ptype, color = self.ask_polygon_type_and_color()
-            if ptype is None:
-                self.zone_start = None
-                return
-
-            if ptype == "boundary":
-                existing_boundaries = [
-                    poly for poly in self.polygons
-                    if poly.get("type") == "boundary"
-                ]
-                if existing_boundaries:
-                    proceed = messagebox.askyesno(
-                        "Replace boundary?",
-                        "A 'boundary' polygon already exists "
-                        f"('{existing_boundaries[0]['name']}'). Only "
-                        "one boundary polygon is used by the "
-                        "navigator. Add this one anyway?"
-                    )
-                    if not proceed:
-                        self.zone_start = None
-                        self.redraw()
-                        return
-
-            p1 = self.pixel_to_world(x1, y1)
-            p2 = self.pixel_to_world(x2, y2)
-
-            self.polygons.append({
-                "name": name,
-                "type": ptype,
-                "frame": "map",
-                "color": color,
-                "points": [
-                    [p1[0], p1[1]],
-                    [p2[0], p1[1]],
-                    [p2[0], p2[1]],
-                    [p1[0], p2[1]],
-                ]
-            })
-
+            if self.zone_preview_rect:
+                self.canvas.delete(self.zone_preview_rect)
+                self.zone_preview_rect = None
             self.zone_start = None
-            self.refresh_sidebar()
+
+            # versehentlicher Doppelklick: kein Rechteck anlegen
+            if abs(x2 - x1) < 3 or abs(y2 - y1) < 3:
+                self.redraw()
+                return
+
+            self.pending_rects.append((
+                self.pixel_to_world(x1, y1),
+                self.pixel_to_world(x2, y2),
+            ))
             self.redraw()
+            return
 
         
         # Polygon
@@ -862,8 +949,8 @@ class MapEditor:
                 self.hover_dot = self.canvas.create_oval(
                     fx - r, fy - r,
                     fx + r, fy + r,
-                    fill="lime",
-                    outline="black",
+                    fill=PALETTE["success"],
+                    outline=PALETTE["bg"],
                     width=2
                 )
         elif self.hover_dot:
@@ -892,7 +979,7 @@ class MapEditor:
 
             self.zone_preview_rect = self.canvas.create_rectangle(
                 x1, y1, event.x, event.y,
-                outline="yellow", width=2, dash=(4, 2)
+                outline=PALETTE["accent"], width=2, dash=(4, 2)
             )
 
     
@@ -946,59 +1033,75 @@ class MapEditor:
             child.destroy()
 
         icon_size = 28
-        colors = self.style.colors
 
         def add_section_header(text):
-            ttk.Label(
-                self.sidebar_list_frame, text=text, font=("", 9, "bold")
-            ).pack(anchor="w", padx=4, pady=(10, 4))
+            tk.Label(
+                self.sidebar_list_frame, text=text.upper(), font=("", 8, "bold"),
+                bg=PALETTE["sidebar"], fg=PALETTE["muted"]
+            ).pack(anchor="w", padx=8, pady=(12, 4))
 
-        def add_row(kind, key, title, coord_text, icon_type):
+        def add_row(kind, key, title, coord_text, icon_type, accent):
 
             card = tk.Frame(
                 self.sidebar_list_frame,
-                bg=colors.inputbg,
-                highlightbackground=colors.border,
+                bg=PALETTE["card"],
+                highlightbackground=PALETTE["border"],
                 highlightthickness=1,
                 bd=0
             )
-            card.pack(fill="x", padx=4, pady=3)
+            card.pack(fill="x", padx=(6, 8), pady=3)
 
-            row = tk.Frame(card, bg=colors.inputbg)
-            row.pack(fill="x", padx=6, pady=6)
+            strip = tk.Frame(card, width=4, bg=accent)      # Farbstreifen links
+            strip.pack(side="left", fill="y")
 
-            text_frame = tk.Frame(row, bg=colors.inputbg)
+            row = tk.Frame(card, bg=PALETTE["card"])
+            row.pack(side="left", fill="x", expand=True, padx=8, pady=7)
+
+            text_frame = tk.Frame(row, bg=PALETTE["card"])
             text_frame.pack(side="left", fill="x", expand=True)
 
-            tk.Label(
-                text_frame, text=title, font=("", 9, "bold"),
-                bg=colors.inputbg, fg=colors.fg, anchor="w"
-            ).pack(anchor="w")
-            tk.Label(
+            title_lbl = tk.Label(
+                text_frame, text=title, font=("", 10, "bold"),
+                bg=PALETTE["card"], fg="#ffffff", anchor="w"
+            )
+            title_lbl.pack(anchor="w")
+
+            coord_lbl = tk.Label(
                 text_frame, text=coord_text, font=("", 8),
-                bg=colors.inputbg, fg=colors.get("secondary"), anchor="w"
-            ).pack(anchor="w")
+                bg=PALETTE["card"], fg=PALETTE["muted"], anchor="w"
+            )
+            coord_lbl.pack(anchor="w")
 
             icon = self.get_object_icon(icon_type, icon_size)
-            icon_label = tk.Label(row, image=icon, bd=0, bg=colors.inputbg)
+            icon_label = tk.Label(row, image=icon, bd=0, bg=PALETTE["card"])
             icon_label.image = icon
             icon_label.pack(side="right", padx=(4, 2))
+
+            body = (card, row, text_frame, title_lbl, coord_lbl, icon_label)
+
+            def paint(bg, border):
+                for w in body:
+                    w.config(bg=bg)
+                card.config(highlightbackground=border)
 
             def on_row_click(event, kind=kind, key=key):
                 self.hovered_item = (kind, key)
                 self.redraw()
 
             def on_enter(event, kind=kind, key=key):
-                card.config(highlightbackground=colors.info)
+                paint(PALETTE["card_hi"], accent)
                 self.hovered_item = (kind, key)
                 self.redraw()
 
             def on_leave(event):
-                card.config(highlightbackground=colors.border)
+                w = card.winfo_containing(event.x_root, event.y_root)
+                if w in body or w is strip:
+                    return                      # nur zwischen Kind-Widgets gewechselt
+                paint(PALETTE["card"], PALETTE["border"])
                 self.hovered_item = None
                 self.redraw()
 
-            for widget in (card, row, text_frame, icon_label):
+            for widget in body + (strip,):
                 widget.bind("<Button-1>", on_row_click)
                 widget.bind("<Enter>", on_enter)
                 widget.bind("<Leave>", on_leave)
@@ -1010,32 +1113,54 @@ class MapEditor:
             for name, obj in self.objects.items():
                 pos = obj.get("position", [0.0, 0.0])
                 coord_text = f"({pos[0]:.2f}, {pos[1]:.2f}) m"
-                add_row("object", name, name, coord_text, obj.get("type", "door"))
-
+                add_row("object", name, name, coord_text,
+                        obj.get("type", "door"), PALETTE["accent"])
 
         if self.polygons:
-            if self.objects:
-                ttk.Separator(self.sidebar_list_frame, orient="horizontal").pack(
-                    fill="x", padx=4, pady=(8, 0)
-                )
             add_section_header("Polygone")
             for idx, p in enumerate(self.polygons):
                 ptype = p.get("type", "obstacle")
                 type_label = self.POLY_TYPE_LABELS.get(ptype, ptype)
-                add_row("polygon", idx, p.get("name", "?"), type_label, ptype)        
+                n_rings = len(self.polygon_rings(p))
+                if n_rings > 1:
+                    type_label += f" · {n_rings} Rechtecke"
+                accent = p.get("color") or TYPE_COLORS.get(ptype, PALETTE["accent"])
+                add_row("polygon", idx, p.get("name", "?"), type_label, ptype, accent)
 
         if not has_content:
-            ttk.Label(
+            tk.Label(
                 self.sidebar_list_frame,
                 text="Noch keine Objekte oder Zonen eingetragen.",
-                font=("", 8),
-                wraplength=220,
-                justify="left"
-            ).pack(anchor="w", padx=4, pady=8)
+                font=("", 8), wraplength=220, justify="left",
+                bg=PALETTE["sidebar"], fg=PALETTE["muted"]
+            ).pack(anchor="w", padx=10, pady=10)
 
     
     # Redraw
     
+
+    def _draw_label(self, x, y, text, accent, bold, tag):
+        font = ("", 9, "bold") if bold else ("", 9, "normal")
+        text_id = self.canvas.create_text(
+            x, y, text=text, fill=PALETTE["text"], font=font, anchor="w", tags=(tag,)
+        )
+        x1, y1, x2, y2 = self.canvas.bbox(text_id)
+        bg_id = self.canvas.create_rectangle(
+            x1 - 4, y1 - 1, x2 + 4, y2 + 1,
+            fill=PALETTE["bg"], outline=accent, tags=(tag,)
+        )
+        self.canvas.tag_lower(bg_id, text_id)
+
+    def _draw_hud(self, text):
+        t = self.canvas.create_text(
+            20, 18, text=text, fill=PALETTE["text"], font=("", 9, "bold"), anchor="nw"
+        )
+        x1, y1, x2, y2 = self.canvas.bbox(t)
+        r = self.canvas.create_rectangle(
+            x1 - 8, y1 - 5, x2 + 8, y2 + 5,
+            fill=PALETTE["surface"], outline=PALETTE["accent"]
+        )
+        self.canvas.tag_lower(r, t)
 
     def redraw(self):
 
@@ -1052,9 +1177,9 @@ class MapEditor:
         if self.hovered_item is not None:
             hovered_kind, hovered_key = self.hovered_item
 
-        hover_color = self.style.colors.success  # thematischer Akzent statt "cyan"
+        hover_color = PALETTE["success"]
 
-        # Objects — als Pixel-Art-Icon zur Uebersicht
+        # Objects: Pixel-Art-Icon + Label
         for name, obj in self.objects.items():
             x, y = self.world_to_pixel(*obj["position"])
 
@@ -1072,65 +1197,72 @@ class MapEditor:
                 )
 
             self.canvas.create_image(x, y, image=icon, tags=(tag,))
-
-            self.canvas.create_text(
-                x + half + 5, y, text=name,
-                fill=hover_color if is_hovered else "red",
-                font=("", 9, "bold") if is_hovered else ("", 9, "normal"),
-                anchor="w",
-                tags=(tag,)
+            self._draw_label(
+                x + half + 6, y, name,
+                hover_color if is_hovered else PALETTE["border"],
+                is_hovered, tag
             )
 
-        # Polygons for walls, structures and obstacles
+        # Polygone: Wände, Strukturen, Hindernisse (ein Eintrag kann mehrere Ringe haben)
         for idx, p in enumerate(self.polygons):
 
-            pts = [self.world_to_pixel(x, y) for x, y in p["points"]]
-            color = p.get("color", "red")
             ptype = p.get("type", "obstacle")
+            color = p.get("color") or TYPE_COLORS.get(ptype, PALETTE["accent"])
 
             is_boundary = (ptype == "boundary")
             is_hovered = (hovered_kind == "polygon" and hovered_key == idx)
 
-            line_width = 6 if is_boundary else 4
+            line_width = 5 if is_boundary else 3
             if is_hovered:
                 line_width += 2
             dash = (8, 4) if is_boundary else None
             line_color = hover_color if is_hovered else color
 
             tag = f"poly:{idx}"
+            rings = self.polygon_rings(p)
 
-            for i in range(len(pts)):
-                x1, y1 = pts[i]
-                x2, y2 = pts[(i + 1) % len(pts)]
-
-                self.canvas.create_line(
-                    x1, y1, x2, y2,
-                    fill=line_color,
-                    width=line_width,
-                    dash=dash,
-                    tags=(tag,)
+            for ring in rings:
+                pts = [self.world_to_pixel(x, y) for x, y in ring]
+                flat = [c for pt in pts for c in pt]
+                self.canvas.create_polygon(
+                    *flat, fill="", outline=line_color, width=line_width,
+                    dash=dash, joinstyle="round", tags=(tag,)
                 )
 
-            label_x, label_y = pts[0]
+            label_x, label_y = self.world_to_pixel(*rings[0][0])
+            label = p["name"]
+            if is_boundary:
+                label += " [boundary]"
+            if len(rings) > 1:
+                label += f"  ×{len(rings)}"
+            self._draw_label(label_x + 8, label_y - 12, label, line_color, is_hovered, tag)
 
-            label = p["name"] + (" [boundary]" if is_boundary else "")
-            self.canvas.create_text(
-                label_x + 8, label_y - 8,
-                text=label,
-                fill=line_color,
-                font=("", 9, "bold") if is_hovered else ("", 9, "normal"),
-                anchor="w",
-                tags=(tag,)
+        # Noch nicht bestätigte Rechtecke
+        for a, b in self.pending_rects:
+            x1, y1 = self.world_to_pixel(*a)
+            x2, y2 = self.world_to_pixel(*b)
+            self.canvas.create_rectangle(
+                x1, y1, x2, y2,
+                outline=PALETTE["accent"], width=2, dash=(6, 3),
+                fill=PALETTE["accent"], stipple="gray25"
             )
 
+        # Polygon in Arbeit
         if self.current_polygon_points:
             pts = self.current_polygon_points
             for i in range(len(pts) - 1):
                 x1, y1 = pts[i]
                 x2, y2 = pts[i + 1]
-                self.canvas.create_line(x1, y1, x2, y2, fill="yellow", width=2)
+                self.canvas.create_line(x1, y1, x2, y2, fill=PALETTE["warning"], width=2)
             for x, y in pts:
-                self.canvas.create_oval(x - 3, y - 3, x + 3, y + 3, fill="yellow")
+                self.canvas.create_oval(x - 3, y - 3, x + 3, y + 3, fill=PALETTE["warning"], outline="")
+
+        # Hinweiszeile im Rechteck-Modus
+        if self.mode.get() == "rectangle":
+            self._draw_hud(
+                f"Rechteck-Modus · {len(self.pending_rects)} gesetzt · "
+                "Enter: bestätigen · Backspace: zurück · Esc: abbrechen"
+            )
     
     # Delete function
     
@@ -1243,21 +1375,24 @@ class MapEditor:
         best_dist = None
 
         for idx, p in enumerate(self.polygons):
-            pts = [self.world_to_pixel(x, y) for x, y in p["points"]]
-            n = len(pts)
+            for ring in self.polygon_rings(p):
+                pts = [self.world_to_pixel(x, y) for x, y in ring]
+                n = len(pts)
 
-            for i in range(n):
-                x1, y1 = pts[i]
-                x2, y2 = pts[(i + 1) % n]
+                for i in range(n):
+                    x1, y1 = pts[i]
+                    x2, y2 = pts[(i + 1) % n]
 
-                dist = self._point_to_segment_distance(sx, sy, x1, y1, x2, y2)
+                    dist = self._point_to_segment_distance(sx, sy, x1, y1, x2, y2)
 
-                if dist <= self.HIT_TOLERANCE_PX and (best_dist is None or dist < best_dist):
-                    best_idx = idx
-                    best_dist = dist
+                    if dist <= self.HIT_TOLERANCE_PX and (best_dist is None or dist < best_dist):
+                        best_idx = idx
+                        best_dist = dist
 
         return best_idx
 
+
+    
     @staticmethod
     def _point_to_segment_distance(px, py, x1, y1, x2, y2):
 
@@ -1345,6 +1480,7 @@ class MapEditor:
         self.objects = {}
         self.polygons = []
         self.current_polygon_points = None
+        self.pending_rects = []
 
         self.refresh_sidebar()
         self.redraw()
